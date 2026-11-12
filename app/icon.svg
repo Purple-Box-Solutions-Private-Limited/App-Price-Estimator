@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- hard "printed" shadow, then the orange tile -->
+  <rect x="7" y="7" width="54" height="54" rx="13" fill="#17140f"/>
+  <rect x="3" y="3" width="54" height="54" rx="13" fill="#ff5420" stroke="#17140f" stroke-width="3"/>
+  <!-- rupee mark drawn as strokes so it renders the same everywhere -->
+  <g fill="none" stroke="#fffdf8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 16h24"/>
+    <path d="M18 26h24"/>
+    <path d="M26 16c7 0 10 4.2 10 9.5S32 35 25 35h-6l17 15"/>
+  </g>
+</svg>

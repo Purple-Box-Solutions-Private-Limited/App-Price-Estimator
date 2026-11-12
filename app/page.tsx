@@ -1,110 +1,145 @@
-import Estimator from "@/components/Estimator";
-import TierGuide from "@/components/TierGuide";
+import Link from "next/link";
+import QuickCheck from "@/components/QuickCheck";
+import RecentSaved from "@/components/RecentSaved";
+import RupeeField from "@/components/RupeeField";
+import { RotatingWord, TypeIcon } from "@/components/ui";
+import { EXAMPLES } from "@/lib/examples";
+import { PROJECT_TYPES, VENDORS } from "@/lib/pricing";
+import { formatINRCompact, formatRange } from "@/lib/format";
 
-const STEPS = [
-  {
-    n: "01",
-    title: "Understand the system",
-    body: "The AI reads the raw brief and works out what's really being asked — a brochure site, a booking platform or a marketplace — plus the hidden scope clients forget (admin panel, notifications, hosting, testing).",
-  },
-  {
-    n: "02",
-    title: "Research the live market",
-    body: "It runs focused web searches for current Indian rate cards, comparable project quotes and running costs (hosting, Razorpay fees, WhatsApp/SMS APIs) — and flags vendor-marketing outliers.",
-  },
-  {
-    n: "03",
-    title: "Reconcile & price",
-    body: "Builds the cost bottom-up from module hours × realistic INR rates, cross-checks against comparables, and rounds to quote-friendly numbers. No inflated, no fancy figures.",
-  },
-];
+const WORDS = ["website", "online store", "mobile app", "school portal", "marketplace", "booking system"];
 
 export default function Home() {
+  const minLog = Math.log10(PROJECT_TYPES[0].market[0]);
+  const maxLog = Math.log10(PROJECT_TYPES[PROJECT_TYPES.length - 1].market[1]);
+  const pct = (v: number) => ((Math.log10(v) - minLog) / (maxLog - minLog)) * 100;
+
   return (
-    <main className="relative overflow-hidden">
-      {/* Background */}
-      <div className="grid-bg pointer-events-none absolute inset-x-0 top-0 h-[900px]" />
-      <div className="floaty pointer-events-none absolute -left-40 top-20 h-[420px] w-[420px] rounded-full bg-violet-700/30 blur-[120px]" />
-      <div className="floaty pointer-events-none absolute -right-40 top-60 h-[380px] w-[380px] rounded-full bg-cyan-600/20 blur-[120px] [animation-delay:-4s]" />
-
-      {/* Nav */}
-      <nav className="no-print relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-6">
-        <a href="#" className="flex items-center gap-2.5">
-          <span className="bg-gradient-brand grid h-9 w-9 place-items-center rounded-xl text-lg font-bold text-white">₹</span>
-          <span className="text-lg font-semibold tracking-tight text-white">QuoteSense</span>
-        </a>
-        <div className="hidden items-center gap-8 text-sm text-zinc-400 sm:flex">
-          <a href="#tiers" className="hover:text-white">Price guide</a>
-          <a href="#how" className="hover:text-white">How it works</a>
-          <a href="#estimate" className="rounded-lg bg-white/10 px-4 py-2 text-white hover:bg-white/15">Estimate a project</a>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <header className="no-print relative z-10 mx-auto max-w-7xl px-5 pb-16 pt-16 sm:pt-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-zinc-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            Indian market pricing · INR · updated with live AI research
+    <main className="mx-auto max-w-[1400px] px-5 sm:px-8">
+      {/* ------------ Hero: the brief goes straight in ------------ */}
+      <section className="grid items-stretch gap-8 pb-14 pt-10 lg:grid-cols-[1.15fr_1fr] lg:pt-14">
+        <div className="fade-up flex flex-col">
+          <div className="kicker flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-accent" /> Pricing desk · India · INR
           </div>
-          <h1 className="text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Know what it should cost <span className="text-gradient">before you quote.</span>
+          <h1 className="mt-5 text-[clamp(3rem,7.2vw,6.6rem)] leading-[0.92]">
+            What should this <br />
+            <em className="text-accent">
+              <RotatingWord words={WORDS} />
+            </em>
+            <br />
+            really cost?
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-400">
-            Paste any client requirement — from a 5-page clinic site to a multi-vendor marketplace — and get a realistic, research-backed price in
-            rupees, broken down by module, vendor type, timeline and running costs.
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-2">
+            Paste the client&apos;s brief. Get a <span className="marker">defensible INR price</span> in seconds, check it against live market
+            research, and send a quote with your margin and GST.
           </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a href="#estimate" className="bg-gradient-brand rounded-xl px-7 py-3.5 font-semibold text-white shadow-xl shadow-violet-900/40 transition hover:brightness-110">
-              Estimate a project →
-            </a>
-            <a href="#tiers" className="rounded-xl border border-white/15 px-7 py-3.5 font-semibold text-white transition hover:bg-white/5">
-              See typical price levels
-            </a>
+
+          <form action="/estimate" method="get" className="sheet mt-8 overflow-hidden">
+            <label htmlFor="brief" className="kicker flex items-center justify-between border-b-[1.5px] border-ink bg-paper-2 px-4 py-2">
+              <span>Client brief</span>
+              <span>↵ opens estimator</span>
+            </label>
+            <textarea
+              id="brief"
+              name="d"
+              rows={3}
+              maxLength={1500}
+              required
+              minLength={10}
+              placeholder="e.g. Ayurveda clinic in Kochi wants a bilingual website with online consultations, Razorpay payments and WhatsApp reminders…"
+              className="block w-full resize-none bg-transparent px-4 py-3 text-[16px] leading-relaxed text-ink placeholder:text-zinc-400 focus:outline-none"
+            />
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-zinc-300 px-4 py-3">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="kicker mr-1">or try</span>
+                {EXAMPLES.map((ex) => (
+                  <Link key={ex.id} href={`/estimate?ex=${ex.id}`} className="chip !py-1 !text-xs">
+                    {ex.label}
+                  </Link>
+                ))}
+              </div>
+              <button type="submit" className="btn btn-ink px-5 py-2.5 text-sm">
+                Estimate it →
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Focal plate */}
+        <div className="plate relative min-h-[420px] overflow-hidden bg-[radial-gradient(circle_at_70%_30%,#fff8ec,transparent_60%)] lg:min-h-0">
+          <div className="kicker absolute left-4 top-4 z-10">Fig. 01 — the rupee</div>
+          <div className="kicker absolute right-4 top-4 z-10 hidden sm:block">move your cursor ↘</div>
+          <div className="absolute inset-x-6 bottom-16 top-12">
+            <RupeeField />
           </div>
-        </div>
-
-        <div className="mx-auto mt-20 grid max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-4">
-          {[
-            ["₹8K – 60K", "Landing pages"],
-            ["₹25K – 2L", "Business websites"],
-            ["₹2L – 15L", "Custom web apps"],
-            ["₹8L – 45L", "SaaS & marketplaces"],
-          ].map(([v, l]) => (
-            <div key={l} className="bg-ink-900/90 p-5 text-center">
-              <div className="text-xl font-bold text-white sm:text-2xl">{v}</div>
-              <div className="mt-1 text-xs text-zinc-500">{l}</div>
-            </div>
-          ))}
-        </div>
-      </header>
-
-      <div className="no-print">
-        <TierGuide />
-      </div>
-
-      {/* How it works */}
-      <section id="how" className="no-print relative mx-auto max-w-7xl px-5 py-24">
-        <div className="mb-12 max-w-2xl">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-violet-300">How deep research works</p>
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">An estimator that does its homework</h2>
-        </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {STEPS.map((s) => (
-            <div key={s.n} className="glass rounded-2xl p-7">
-              <div className="text-gradient text-4xl font-bold">{s.n}</div>
-              <h3 className="mt-4 text-lg font-semibold text-white">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">{s.body}</p>
-            </div>
-          ))}
+          <div className="absolute inset-x-0 bottom-0 z-10 grid grid-cols-4 border-t-[1.5px] border-ink bg-sheet/90 backdrop-blur-sm">
+            {VENDORS.map((v, i) => (
+              <div key={v.id} className={`px-3 py-2.5 ${i ? "border-l border-zinc-300" : ""}`}>
+                <div className="kicker !text-[9px]">{v.name}</div>
+                <div className="num text-sm font-semibold">₹{v.rate[0].toLocaleString("en-IN")}+/h</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <Estimator />
+      {/* ------------ Desk ------------ */}
+      <section className="grid gap-6 lg:grid-cols-[1.55fr_1fr]">
+        <QuickCheck />
+        <RecentSaved />
+      </section>
 
-      <footer className="no-print border-t border-white/5 py-10 text-center text-xs text-zinc-600">
-        Estimates are indicative and exclude 18% GST. Always confirm final scope with the client before sending a quote.
-      </footer>
+      {/* ------------ Price index board ------------ */}
+      <section className="mt-14">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <h2 className="text-5xl leading-none">
+            The price <em className="text-accent">index</em>
+          </h2>
+          <Link href="/guide" className="kicker underline decoration-accent decoration-2 underline-offset-4 hover:text-ink">
+            Full price guide →
+          </Link>
+        </div>
+        <div className="sheet overflow-hidden">
+          <div className="kicker grid grid-cols-[1.4fr_2.4fr_1fr] gap-4 border-b-[1.5px] border-ink bg-ink px-5 py-2.5 !text-paper/70 max-md:hidden">
+            <span>Project level</span>
+            <span className="flex justify-between">
+              <span>{formatINRCompact(PROJECT_TYPES[0].market[0])}</span>
+              <span>log scale</span>
+              <span>{formatINRCompact(PROJECT_TYPES[PROJECT_TYPES.length - 1].market[1])}</span>
+            </span>
+            <span className="text-right">Typical quote</span>
+          </div>
+          {PROJECT_TYPES.map((t, i) => (
+            <Link
+              key={t.id}
+              href={`/estimate?t=${t.id}&p=${t.includedPages}&f=`}
+              className="group grid items-center gap-4 border-b border-zinc-200 px-5 py-4 transition last:border-0 hover:bg-lime/40 md:grid-cols-[1.4fr_2.4fr_1fr]"
+            >
+              <div className="flex items-center gap-3">
+                <span className="num w-6 text-xs text-zinc-400">{String(i + 1).padStart(2, "0")}</span>
+                <span className="grid h-10 w-10 place-items-center rounded-lg border-[1.5px] border-ink bg-sheet transition group-hover:bg-accent group-hover:text-white">
+                  <TypeIcon id={t.id} className="h-5 w-5" />
+                </span>
+                <div>
+                  <div className="font-semibold">{t.name}</div>
+                  <div className="text-xs text-zinc-500">
+                    {t.typicalWeeks[0]}–{t.typicalWeeks[1]} weeks
+                  </div>
+                </div>
+              </div>
+              <div className="relative h-7 max-md:hidden">
+                <div className="absolute inset-x-0 top-1/2 border-t border-dashed border-zinc-300" />
+                <div
+                  className="absolute top-1/2 h-3 -translate-y-1/2 rounded-full border-[1.5px] border-ink bg-accent transition-all group-hover:h-5"
+                  style={{ left: `${pct(t.market[0])}%`, width: `${Math.max(4, pct(t.market[1]) - pct(t.market[0]))}%` }}
+                />
+              </div>
+              <div className="num text-right text-lg font-semibold">{formatRange(t.market[0], t.market[1])}</div>
+            </Link>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }

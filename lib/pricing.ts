@@ -46,9 +46,9 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "Landing / Static Site",
     tagline: "1–5 pages, fast, no backend",
     examples: "Event page, portfolio, product launch, doctor/CA profile",
-    hours: [12, 25],
+    hours: [12, 26],
     includedPages: 5,
-    market: [8_000, 60_000],
+    market: [5_000, 50_000],
     typicalWeeks: [1, 2],
     stack: "HTML/Next.js/Framer/Webflow or WordPress theme",
     includes: ["Responsive design", "Contact form / WhatsApp CTA", "Basic on-page SEO", "Hosting setup"],
@@ -60,9 +60,9 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "Business / CMS Website",
     tagline: "5–20 pages, editable content",
     examples: "Company site, school, clinic, real-estate builder, restaurant",
-    hours: [35, 70],
+    hours: [30, 60],
     includedPages: 10,
-    market: [25_000, 2_00_000],
+    market: [25_000, 2_50_000],
     typicalWeeks: [2, 5],
     stack: "WordPress / Webflow / headless CMS + Next.js",
     includes: ["Custom-themed design", "CMS for content edits", "Blog / news", "Lead forms + analytics", "SEO setup"],
@@ -74,9 +74,9 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "E-commerce Store",
     tagline: "Catalog, cart, payments, orders",
     examples: "D2C brand, boutique, grocery, electronics store",
-    hours: [90, 180],
+    hours: [60, 130],
     includedPages: 12,
-    market: [40_000, 8_00_000],
+    market: [20_000, 8_00_000],
     typicalWeeks: [3, 10],
     stack: "Shopify / WooCommerce / Medusa or custom (Next.js + Node)",
     includes: ["Product catalog & cart", "Razorpay / PayU / UPI checkout", "Order & inventory admin", "Shipping (Shiprocket) setup", "GST invoices"],
@@ -88,9 +88,9 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "Custom Web Application",
     tagline: "Logins, dashboards, workflows",
     examples: "Booking system, CRM, LMS, portal, internal tool",
-    hours: [300, 600],
+    hours: [200, 420],
     includedPages: 15,
-    market: [2_00_000, 15_00_000],
+    market: [1_50_000, 15_00_000],
     typicalWeeks: [8, 20],
     stack: "React/Next.js + Node/Django/Laravel + PostgreSQL",
     includes: ["User auth & roles", "Admin dashboard", "Custom business logic", "API & database design", "Testing & deployment"],
@@ -102,9 +102,9 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "SaaS / Marketplace",
     tagline: "Multi-sided, subscriptions, scale",
     examples: "Multi-vendor marketplace, SaaS product, aggregator, fintech/edtech app",
-    hours: [650, 1300],
+    hours: [480, 950],
     includedPages: 25,
-    market: [8_00_000, 45_00_000],
+    market: [6_00_000, 55_00_000],
     typicalWeeks: [16, 36],
     stack: "Next.js + Node/Go microservices, PostgreSQL, Redis, AWS/GCP",
     includes: ["Multi-tenant / multi-vendor", "Subscription billing", "Analytics & reporting", "Notifications", "Scalable cloud infra"],
@@ -116,9 +116,9 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "Enterprise System",
     tagline: "Integrations, compliance, high scale",
     examples: "ERP/CRM integrated portal, banking/insurance, government, hospital system",
-    hours: [1500, 3200],
+    hours: [1200, 2600],
     includedPages: 40,
-    market: [30_00_000, 1_50_00_000],
+    market: [50_00_000, 1_50_00_000],
     typicalWeeks: [26, 60],
     stack: "Microservices, SSO, audit trails, cloud/hybrid, CI/CD",
     includes: ["SSO & granular RBAC", "ERP/CRM/legacy integrations", "Security audit & compliance (DPDP, ISO)", "Load testing & SLAs", "Dedicated team"],
@@ -137,33 +137,33 @@ export interface Feature {
 }
 
 export const FEATURES: Feature[] = [
-  { id: "auth", name: "User accounts & login", hours: [25, 50], includedIn: ["webapp", "platform", "enterprise"], group: "Core" },
-  { id: "admin", name: "Admin dashboard", hours: [40, 100], includedIn: ["webapp", "platform", "enterprise"], group: "Core" },
-  { id: "cms", name: "Blog / CMS", hours: [10, 25], includedIn: ["business"], group: "Core" },
-  { id: "seo", name: "SEO setup & speed optimisation", hours: [10, 25], group: "Core" },
-  { id: "multilang", name: "Multi-language (Hindi/regional)", hours: [20, 50], group: "Core" },
-  { id: "search", name: "Advanced search & filters", hours: [20, 50], group: "Core" },
-  { id: "roles", name: "Roles & permissions", hours: [25, 60], includedIn: ["enterprise"], group: "Core" },
+  { id: "auth", name: "User accounts & login", hours: [8, 20], includedIn: ["webapp", "platform", "enterprise"], group: "Core" },
+  { id: "admin", name: "Admin dashboard", hours: [20, 50], includedIn: ["webapp", "platform", "enterprise"], group: "Core" },
+  { id: "cms", name: "Blog / CMS", hours: [6, 14], includedIn: ["business"], group: "Core" },
+  { id: "seo", name: "SEO setup & speed optimisation", hours: [6, 14], group: "Core" },
+  { id: "multilang", name: "Multi-language (Hindi/regional)", hours: [12, 30], group: "Core" },
+  { id: "search", name: "Advanced search & filters", hours: [10, 28], group: "Core" },
+  { id: "roles", name: "Roles & permissions", hours: [10, 28], includedIn: ["enterprise"], group: "Core" },
 
-  { id: "payments", name: "Payment gateway (Razorpay/UPI)", hours: [15, 35], includedIn: ["ecommerce"], group: "Commerce" },
-  { id: "catalog", name: "Product catalog & cart", hours: [40, 90], includedIn: ["ecommerce"], group: "Commerce" },
-  { id: "booking", name: "Booking / appointments", hours: [40, 90], group: "Commerce" },
-  { id: "subscriptions", name: "Subscription billing", hours: [40, 90], includedIn: ["platform"], group: "Commerce" },
-  { id: "multivendor", name: "Multi-vendor marketplace", hours: [120, 260], group: "Commerce" },
-  { id: "gst", name: "GST invoicing & reports", hours: [20, 45], group: "Commerce" },
+  { id: "payments", name: "Payment gateway (Razorpay/UPI)", hours: [8, 20], includedIn: ["ecommerce"], group: "Commerce" },
+  { id: "catalog", name: "Product catalog & cart", hours: [25, 60], includedIn: ["ecommerce"], group: "Commerce" },
+  { id: "booking", name: "Booking / appointments", hours: [24, 60], group: "Commerce" },
+  { id: "subscriptions", name: "Subscription billing", hours: [20, 50], includedIn: ["platform"], group: "Commerce" },
+  { id: "multivendor", name: "Multi-vendor marketplace", hours: [80, 180], group: "Commerce" },
+  { id: "gst", name: "GST invoicing & reports", hours: [12, 30], group: "Commerce" },
 
-  { id: "notifications", name: "Email / SMS / WhatsApp alerts", hours: [15, 35], monthly: [500, 5_000], group: "Engagement" },
-  { id: "chat", name: "Real-time chat", hours: [50, 120], monthly: [0, 3_000], group: "Engagement" },
-  { id: "maps", name: "Maps & location", hours: [15, 40], monthly: [0, 4_000], group: "Engagement" },
-  { id: "reviews", name: "Ratings & reviews", hours: [15, 35], group: "Engagement" },
-  { id: "analytics", name: "Analytics & reports dashboard", hours: [40, 100], group: "Engagement" },
+  { id: "notifications", name: "Email / SMS / WhatsApp alerts", hours: [8, 20], monthly: [500, 5_000], group: "Engagement" },
+  { id: "chat", name: "Real-time chat", hours: [30, 80], monthly: [0, 3_000], group: "Engagement" },
+  { id: "maps", name: "Maps & location", hours: [6, 18], monthly: [0, 4_000], group: "Engagement" },
+  { id: "reviews", name: "Ratings & reviews", hours: [8, 20], group: "Engagement" },
+  { id: "analytics", name: "Analytics & reports dashboard", hours: [20, 55], group: "Engagement" },
 
-  { id: "ai", name: "AI chatbot / recommendations", hours: [60, 160], monthly: [2_000, 20_000], group: "Advanced" },
-  { id: "integrations", name: "3rd-party API integrations", hours: [25, 70], group: "Advanced" },
-  { id: "erp", name: "ERP / CRM / Tally integration", hours: [60, 160], group: "Advanced" },
-  { id: "migration", name: "Data migration from old system", hours: [20, 60], group: "Advanced" },
-  { id: "mobile", name: "Mobile app (Android + iOS)", hours: [300, 650], monthly: [700, 2_000], group: "Advanced" },
-  { id: "pwa", name: "PWA / offline support", hours: [20, 50], group: "Advanced" },
+  { id: "ai", name: "AI chatbot / recommendations", hours: [24, 80], monthly: [2_000, 20_000], group: "Advanced" },
+  { id: "integrations", name: "3rd-party API integrations", hours: [12, 40], group: "Advanced" },
+  { id: "erp", name: "ERP / CRM / Tally integration", hours: [40, 120], group: "Advanced" },
+  { id: "migration", name: "Data migration from old system", hours: [12, 40], group: "Advanced" },
+  { id: "mobile", name: "Mobile app (Android + iOS)", hours: [220, 480], monthly: [700, 2_000], group: "Advanced" },
+  { id: "pwa", name: "PWA / offline support", hours: [10, 24], group: "Advanced" },
 ];
 
 export type DesignLevel = "template" | "custom" | "premium";
@@ -187,30 +187,58 @@ export const URGENCY: { id: Urgency; name: string; desc: string; mult: number; s
   { id: "rush", name: "Rush", desc: "Tight deadline, extra people", mult: 1.25, speed: 1.5 },
 ];
 
-export type VendorId = "freelancer" | "small" | "mid" | "premium";
+export type VendorId = "freelancer" | "small" | "mid" | "premium" | "own";
 export interface Vendor {
   id: VendorId;
   name: string;
   desc: string;
   /** Blended hourly rate in INR (design + dev + QA + PM) for metro clients */
   rate: [number, number];
-  /** Productive hours per week this vendor typically allocates */
+  /** Productive hours per week this vendor typically puts on one project */
   capacity: number;
   /** Who this suits */
   fit: string;
 }
 
+/**
+ * Market vendors. Rates recalibrated Nov 2026 against published Indian data:
+ * domestic freelancers ₹500–2,500/h (most SMB work in the lower half),
+ * Indian firms $10–40/h, Clutch-listed mid-size firms commonly $25–49/h.
+ */
 export const VENDORS: Vendor[] = [
-  { id: "freelancer", name: "Freelancer", desc: "1–2 people", rate: [400, 1_000], capacity: 30, fit: "Budget, simple scope" },
-  { id: "small", name: "Small Agency", desc: "5–20 people", rate: [800, 1_600], capacity: 60, fit: "Most SMB projects" },
-  { id: "mid", name: "Mid-size Agency", desc: "20–150 people", rate: [1_500, 2_800], capacity: 100, fit: "Funded startups, complex apps" },
-  { id: "premium", name: "Premium / Tier-1", desc: "Top studios & IT firms", rate: [2_800, 5_000], capacity: 140, fit: "Enterprise, brand-critical" },
+  { id: "freelancer", name: "Freelancer", desc: "1–2 people", rate: [400, 1_200], capacity: 25, fit: "Budget, simple scope" },
+  { id: "small", name: "Small Agency", desc: "5–20 people", rate: [900, 1_800], capacity: 35, fit: "Most SMB projects" },
+  { id: "mid", name: "Mid-size Agency", desc: "20–150 people", rate: [1_800, 3_200], capacity: 60, fit: "Funded startups, complex apps" },
+  { id: "premium", name: "Premium / Tier-1", desc: "Top studios & IT firms", rate: [3_200, 6_000], capacity: 90, fit: "Enterprise, brand-critical" },
 ];
+
+/** "Me / my team": prices the same scope at the user's own hourly rate. */
+export function ownVendor(rate: number): Vendor {
+  return { id: "own", name: "Your rate", desc: "You / your team", rate: [rate, rate], capacity: 30, fit: "Your own quote" };
+}
 
 export type CityTier = "metro" | "tier2";
 export const CITY_TIERS: { id: CityTier; name: string; mult: number }[] = [
   { id: "metro", name: "Metro (Mumbai, Bengaluru, Delhi NCR, Pune, Hyderabad)", mult: 1 },
   { id: "tier2", name: "Tier-2/3 city vendor", mult: 0.82 },
+];
+
+/**
+ * E-commerce is priced very differently by platform: a Shopify theme setup
+ * (₹25–65K in the market) vs a custom storefront + backend (₹4–8L typical).
+ */
+export type EcomPlatform = "shopify" | "woocommerce" | "custom";
+export const ECOM_PLATFORMS: {
+  id: EcomPlatform;
+  name: string;
+  desc: string;
+  hours: [number, number];
+  featureScale: number;
+  monthly: [number, number];
+}[] = [
+  { id: "shopify", name: "Shopify", desc: "Theme + apps, fastest", hours: [30, 70], featureScale: 0.45, monthly: [2_500, 12_000] },
+  { id: "woocommerce", name: "WooCommerce", desc: "WordPress + plugins", hours: [45, 100], featureScale: 0.55, monthly: [1_000, 6_000] },
+  { id: "custom", name: "Custom build", desc: "Own storefront + backend", hours: [160, 340], featureScale: 0.85, monthly: [3_000, 20_000] },
 ];
 
 export interface EstimateInput {
@@ -223,6 +251,12 @@ export interface EstimateInput {
   urgency: Urgency;
   vendor: VendorId;
   city: CityTier;
+  /** Only used for e-commerce */
+  ecomPlatform: EcomPlatform;
+  /** Separate mobile apps (e.g. customer + vendor + delivery = 3); used with the "mobile" feature */
+  mobileApps: number;
+  /** User's own blended hourly rate in INR; 0 = not set */
+  myRate: number;
 }
 
 export const DEFAULT_INPUT: EstimateInput = {
@@ -235,7 +269,20 @@ export const DEFAULT_INPUT: EstimateInput = {
   urgency: "standard",
   vendor: "small",
   city: "metro",
+  ecomPlatform: "shopify",
+  mobileApps: 1,
+  myRate: 0,
 };
+
+/** Fill fields missing from older saved estimates / links, and clamp numbers. */
+export function normalizeInput(input: Partial<EstimateInput>): EstimateInput {
+  const merged = { ...DEFAULT_INPUT, ...input };
+  merged.mobileApps = Math.min(3, Math.max(1, Math.round(Number(merged.mobileApps) || 1)));
+  merged.myRate = Math.min(20_000, Math.max(0, Math.round(Number(merged.myRate) || 0)));
+  if (!ECOM_PLATFORMS.some((p) => p.id === merged.ecomPlatform)) merged.ecomPlatform = "shopify";
+  if (merged.vendor === "own" && !merged.myRate) merged.vendor = "small";
+  return merged;
+}
 
 export interface LineItem {
   name: string;
@@ -252,44 +299,56 @@ export interface VendorQuote {
 
 export interface BaselineResult {
   type: ProjectType;
+  /** Effective feature scale for this build (platform-aware for e-commerce) */
+  featureScale: number;
   lineItems: LineItem[];
   hours: [number, number];
   multiplier: number;
+  /** Market vendors, plus "Your rate" when set */
   quotes: VendorQuote[];
   selected: VendorQuote;
   monthly: [number, number];
   /** Annual maintenance (AMC), typically 15–20% of build */
   amc: [number, number];
   domainYearly: [number, number];
+  /** How wide the price range is and why */
+  confidence: { label: "Normal" | "Moderate" | "Wide"; reason: string };
 }
 
-export function computeBaseline(input: EstimateInput): BaselineResult {
+export function computeBaseline(rawInput: EstimateInput): BaselineResult {
+  const input = normalizeInput(rawInput);
   const type = PROJECT_TYPES.find((t) => t.id === input.projectType) ?? PROJECT_TYPES[1];
-  const lineItems: LineItem[] = [{ name: `${type.name} — core build`, hours: type.hours }];
+  const platform = type.id === "ecommerce" ? ECOM_PLATFORMS.find((p) => p.id === input.ecomPlatform) ?? ECOM_PLATFORMS[0] : null;
+  const coreHours = platform ? platform.hours : type.hours;
+  const featureScale = platform ? platform.featureScale : type.featureScale;
+
+  const lineItems: LineItem[] = [{ name: platform ? `${platform.name} store — core build` : `${type.name} — core build`, hours: coreHours }];
 
   const extraPages = Math.max(0, input.pages - type.includedPages);
   if (extraPages > 0) {
-    lineItems.push({ name: `${extraPages} additional pages/screens`, hours: [extraPages * 3, extraPages * 6] });
+    lineItems.push({ name: `${extraPages} additional pages/screens`, hours: [extraPages * 2, extraPages * 5] });
   }
 
-  let monthlyLo = type.monthlyRunning[0];
-  let monthlyHi = type.monthlyRunning[1];
+  let monthlyLo = platform ? platform.monthly[0] : type.monthlyRunning[0];
+  let monthlyHi = platform ? platform.monthly[1] : type.monthlyRunning[1];
 
   for (const fid of input.features) {
     const f = FEATURES.find((x) => x.id === fid);
     if (!f) continue;
+    // extra apps (vendor, delivery…) share the backend and components, so each adds ~60%
+    const appMult = f.id === "mobile" ? 1 + 0.6 * (input.mobileApps - 1) : 1;
     if (f.monthly) {
-      monthlyLo += f.monthly[0];
-      monthlyHi += f.monthly[1];
+      monthlyLo += f.monthly[0] * appMult;
+      monthlyHi += f.monthly[1] * appMult;
     }
     if (f.includedIn?.includes(type.id)) continue;
+    const scale = f.id === "mobile" ? 1 : featureScale; // an app is an app, whatever the website is
     lineItems.push({
-      name: f.name,
-      hours: [Math.round(f.hours[0] * type.featureScale), Math.round(f.hours[1] * type.featureScale)],
+      name: f.id === "mobile" && input.mobileApps > 1 ? `${input.mobileApps} mobile apps (Android + iOS)` : f.name,
+      hours: [Math.round(f.hours[0] * scale * appMult), Math.round(f.hours[1] * scale * appMult)],
     });
   }
 
-  // Project management + QA overhead grows with complexity
   const rawLo = lineItems.reduce((s, l) => s + l.hours[0], 0);
   const rawHi = lineItems.reduce((s, l) => s + l.hours[1], 0);
   const design = DESIGN_LEVELS.find((d) => d.id === input.design)!;
@@ -301,26 +360,51 @@ export function computeBaseline(input: EstimateInput): BaselineResult {
   const hours: [number, number] = [Math.round(rawLo * multiplier), Math.round(rawHi * multiplier)];
   const hoursLikely = (hours[0] + hours[1]) / 2;
 
-  const quotes: VendorQuote[] = VENDORS.map((vendor) => {
-    const midRate = ((vendor.rate[0] + vendor.rate[1]) / 2) * city.mult;
-    // Quote range is centred on the most-likely effort; ±15–20% reflects
-    // real variance between vendors of the same tier, not worst-case scope.
-    const likely = roundQuote(hoursLikely * midRate);
-    const low = roundQuote(hoursLikely * midRate * 0.85);
-    const high = roundQuote(hoursLikely * midRate * 1.2);
+  // Range width: base −15% / +20% (vendor variance), widened when the brief is thin
+  // or the project is large, because scope is then genuinely less certain.
+  const briefLen = input.description.trim().length;
+  let spread = 0;
+  const reasons: string[] = [];
+  if (briefLen < 120) {
+    spread += 0.1;
+    reasons.push("the brief is short");
+  } else if (briefLen < 400) {
+    spread += 0.05;
+    reasons.push("the brief is light on detail");
+  }
+  if (hoursLikely > 800) {
+    spread += 0.05;
+    reasons.push("it's a large project");
+  }
+  const lowF = 0.85 - spread;
+  const highF = 1.2 + spread * 1.5;
+  const confidence: BaselineResult["confidence"] = {
+    label: spread >= 0.1 ? "Wide" : spread > 0 ? "Moderate" : "Normal",
+    reason: reasons.length ? `Range widened because ${reasons.join(" and ")}.` : "Detailed brief: range reflects normal vendor variance.",
+  };
+
+  const quoteFor = (vendor: Vendor, rate: number): VendorQuote => {
+    const likely = roundQuote(hoursLikely * rate);
+    const low = roundQuote(hoursLikely * rate * lowF);
+    const high = roundQuote(hoursLikely * rate * highF);
     const perWeek = vendor.capacity * urgency.speed;
+    // +1 week for client feedback rounds, content hand-off and launch
     const weeks: [number, number] = [
-      Math.max(1, Math.round(hours[0] / perWeek)),
-      Math.max(1, Math.ceil(hours[1] / perWeek)),
+      Math.max(1, Math.round(hours[0] / perWeek)) + 1,
+      Math.max(1, Math.ceil(hours[1] / perWeek)) + 1,
     ];
     return { vendor, low, likely, high, weeks };
-  });
+  };
+
+  const quotes: VendorQuote[] = VENDORS.map((v) => quoteFor(v, ((v.rate[0] + v.rate[1]) / 2) * city.mult));
+  if (input.myRate > 0) quotes.push(quoteFor(ownVendor(input.myRate), input.myRate));
 
   const selected = quotes.find((q) => q.vendor.id === input.vendor) ?? quotes[1];
   const amc: [number, number] = [roundQuote(selected.likely * 0.15), roundQuote(selected.likely * 0.22)];
 
   return {
     type,
+    featureScale,
     lineItems,
     hours,
     multiplier,
@@ -329,23 +413,31 @@ export function computeBaseline(input: EstimateInput): BaselineResult {
     monthly: [roundQuote(monthlyLo), roundQuote(monthlyHi)],
     amc,
     domainYearly: [800, 1_500],
+    confidence,
   };
 }
 
-export function describeInput(input: EstimateInput): string {
+export function describeInput(rawInput: EstimateInput): string {
+  const input = normalizeInput(rawInput);
   const type = PROJECT_TYPES.find((t) => t.id === input.projectType)!;
   const feats = input.features
     .map((id) => FEATURES.find((f) => f.id === id)?.name)
     .filter(Boolean)
     .join(", ");
+  const vendor =
+    input.vendor === "own"
+      ? `Built in-house by the sales team's own company at a blended ₹${input.myRate.toLocaleString("en-IN")}/hour (price "recommended" at this rate)`
+      : VENDORS.find((v) => v.id === input.vendor)!.name;
   return [
     `Project category selected: ${type.name} (${type.tagline})`,
+    ...(type.id === "ecommerce" ? [`E-commerce platform: ${ECOM_PLATFORMS.find((p) => p.id === input.ecomPlatform)!.name}`] : []),
     `Selected features: ${feats || "none selected"}`,
+    ...(input.features.includes("mobile") ? [`Number of separate mobile apps: ${input.mobileApps}`] : []),
     `Approx. pages/screens: ${input.pages}`,
     `Design level: ${DESIGN_LEVELS.find((d) => d.id === input.design)!.name}`,
     `Scale & reliability: ${SCALE_LEVELS.find((s) => s.id === input.scale)!.name} (${SCALE_LEVELS.find((s) => s.id === input.scale)!.desc})`,
     `Timeline urgency: ${URGENCY.find((u) => u.id === input.urgency)!.name}`,
-    `Preferred vendor type: ${VENDORS.find((v) => v.id === input.vendor)!.name}`,
+    `Preferred vendor type: ${vendor}`,
     `Vendor location: ${CITY_TIERS.find((c) => c.id === input.city)!.name}`,
   ].join("\n");
 }

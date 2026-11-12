@@ -1,9 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { computeBaseline, describeInput, type EstimateInput } from "@/lib/pricing";
 import { formatINR } from "@/lib/format";
-import { EstimateSchema, type Source, type StreamEvent } from "@/lib/schema";
+import { EstimateSchema, type AiEstimate, type Source, type StreamEvent } from "@/lib/schema";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,8 +18,11 @@ const InputSchema = z.object({
   design: z.enum(["template", "custom", "premium"]),
   scale: z.enum(["standard", "growth", "critical"]),
   urgency: z.enum(["flexible", "standard", "rush"]),
-  vendor: z.enum(["freelancer", "small", "mid", "premium"]),
+  vendor: z.enum(["freelancer", "small", "mid", "premium", "own"]),
   city: z.enum(["metro", "tier2"]),
+  ecomPlatform: z.enum(["shopify", "woocommerce", "custom"]).default("shopify"),
+  mobileApps: z.number().int().min(1).max(3).default(1),
+  myRate: z.number().min(0).max(20000).default(0),
 });
 
 const SYSTEM = `You are a senior pre-sales estimator at an Indian software services company with 15 years of experience quoting websites, web apps and mobile apps for Indian clients (SMBs, startups and enterprises).
@@ -33,14 +35,32 @@ Principles:
 - Prices are in INR, exclusive of 18% GST, rounded to quote-friendly figures (nearest ₹1,000 below ₹1 lakh, nearest ₹5,000 below ₹10 lakh, nearest ₹25,000 above).
 - Use Indian context: Razorpay/PayU/Cashfree, UPI, Shiprocket, MSG91/Gupshup/WhatsApp Business API, AWS Mumbai / DigitalOcean Bangalore, Hostinger/GoDaddy India, DPDP Act 2023, GST.`;
 
+/** JSON Schema for the estimate, embedded in the prompt (computed once per server start). */
+const ESTIMATE_JSON_SCHEMA = JSON.stringify(z.toJSONSchema(EstimateSchema, { io: "input" }));
+
+/** Pull the JSON object out of a reply, tolerating stray prose or ``` fences around it. */
+function extractJson(text: string): unknown {
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const raw = fenced ? fenced[1] : text;
+  const start = raw.indexOf("{");
+  const end = raw.lastIndexOf("}");
+  if (start < 0 || end <= start) throw new Error("no JSON object found");
+  return JSON.parse(raw.slice(start, end + 1));
+}
+
 function sse(event: StreamEvent): Uint8Array {
   return new TextEncoder().encode(`data: ${JSON.stringify(event)}\n\n`);
 }
 
 export async function POST(req: Request) {
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
+  // A visitor can bring their own key (stored in their browser, sent per request, never persisted here).
+  const userKey = req.headers.get("x-anthropic-key")?.trim() || "";
+  if (userKey && (userKey.length > 300 || !/^sk-ant-[A-Za-z0-9_-]+$/.test(userKey))) {
+    return Response.json({ error: "That API key doesn't look valid. It should start with sk-ant-." }, { status: 400 });
+  }
+  if (!userKey && !process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
     return Response.json(
-      { error: "AI research is not configured. Add ANTHROPIC_API_KEY to .env.local and restart." },
+      { error: "AI research needs an Anthropic API key. Add yours in Settings, or set ANTHROPIC_API_KEY on the server." },
       { status: 503 },
     );
   }
@@ -55,7 +75,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "Please describe the requirement in at least one sentence." }, { status: 400 });
   }
 
-  const client = new Anthropic();
+  const client = userKey ? new Anthropic({ apiKey: userKey }) : new Anthropic();
   const baseline = computeBaseline(input);
   const baselineText = [
     `Rule-based reference (our internal calculator, may be wrong — verify and override with research):`,
@@ -161,25 +181,22 @@ TASK (research phase):
           .map((s) => `- ${s.title} — ${s.url}`)
           .join("\n");
 
-        const final = await client.beta.messages
-          .stream({
-            model: MODEL,
-            max_tokens: 32000,
-            betas: ["server-side-fallback-2026-07-01"],
-            fallbacks: "default",
-            system: SYSTEM,
-            thinking: { type: "adaptive" },
-            output_config: { effort: "high", format: betaZodOutputFormat(EstimateSchema) },
-            messages: [
-              {
-                role: "user",
-                content: `${brief}
+        // The estimate schema is too large for constrained decoding ("compiled grammar is too
+        // large"), so the model gets the JSON Schema in the prompt and we validate with Zod,
+        // feeding validation errors back once if the first attempt doesn't fit.
+        const estimateMessages: Anthropic.Beta.BetaMessageParam[] = [
+          {
+            role: "user",
+            content: `${brief}
 
 LIVE RESEARCH NOTES (gathered just now via web search):
 ${notes}
 
 SOURCES CONSULTED:
 ${sourceList || "(none)"}
+
+OUTPUT FORMAT: reply with a single JSON object and nothing else (no prose, no markdown fences). It must validate against this JSON Schema:
+${ESTIMATE_JSON_SCHEMA}
 
 TASK (estimate phase): Produce the final estimate as JSON.
 Rules:
@@ -190,21 +207,59 @@ Rules:
 - Keep ranges tight and honest: high should generally be no more than ~1.8x low. Width should reflect real uncertainty in the brief.
 - Cite only sources that appear in the research notes; if a figure is your own judgement, set source to "Estimator judgement".
 - Payment milestones must sum to 100.
-- clarifyingQuestions: only the ones that would materially move the price.`,
-              },
-            ],
-          })
-          .finalMessage();
+- clarifyingQuestions: only the ones that would materially move the price.
+- All money fields are plain numbers in INR (e.g. 125000), not strings and not lakhs.`,
+          },
+        ];
 
-        if (final.stop_reason === "refusal") throw new Error("The model declined this request.");
-        if (final.stop_reason === "max_tokens") throw new Error("The estimate was cut off. Please try again with a shorter brief.");
-        const estimate = final.parsed_output;
-        if (!estimate) throw new Error("Could not parse the AI estimate. Please retry.");
+        let estimate: AiEstimate | null = null;
+        let finalModel: string = MODEL;
+        for (let attempt = 0; attempt < 2 && !estimate; attempt++) {
+          const final = await client.beta.messages
+            .stream({
+              model: MODEL,
+              max_tokens: 32000,
+              betas: ["server-side-fallback-2026-07-01"],
+              fallbacks: "default",
+              system: SYSTEM,
+              thinking: { type: "adaptive" },
+              output_config: { effort: "high" },
+              messages: estimateMessages,
+            })
+            .finalMessage();
 
-        send({ type: "result", estimate, sources: [...sources.values()], model: final.model });
+          if (final.stop_reason === "refusal") throw new Error("The model declined this request.");
+          if (final.stop_reason === "max_tokens") throw new Error("The estimate was cut off. Please try again with a shorter brief.");
+          finalModel = final.model;
+
+          const text = final.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+          let problem: string;
+          try {
+            const parsed = EstimateSchema.safeParse(extractJson(text));
+            if (parsed.success) {
+              estimate = parsed.data;
+              break;
+            }
+            problem = z.prettifyError(parsed.error);
+          } catch (e) {
+            problem = `Not valid JSON: ${(e as Error).message}`;
+          }
+          if (attempt === 0) {
+            send({ type: "status", message: "Tidying up the estimate format…" });
+            // append-only: keep the model's own turn, then ask for a corrected object
+            estimateMessages.push({ role: "assistant", content: final.content });
+            estimateMessages.push({
+              role: "user",
+              content: `That reply did not validate against the schema:\n${problem.slice(0, 3000)}\n\nReply again with only the corrected, complete JSON object.`,
+            });
+          }
+        }
+        if (!estimate) throw new Error("Could not read the AI estimate. Please retry.");
+
+        send({ type: "result", estimate, sources: [...sources.values()], model: finalModel });
       } catch (err) {
         let message = "Something went wrong while researching.";
-        if (err instanceof Anthropic.AuthenticationError) message = "Invalid ANTHROPIC_API_KEY.";
+        if (err instanceof Anthropic.AuthenticationError) message = userKey ? "Your API key was rejected. Check it in Settings." : "Invalid ANTHROPIC_API_KEY on the server.";
         else if (err instanceof Anthropic.RateLimitError) message = "Rate limited by the AI provider — try again in a minute.";
         else if (err instanceof Anthropic.APIError) message = `AI provider error (${err.status ?? "network"}): ${err.message}`;
         else if (err instanceof Error) message = err.message;

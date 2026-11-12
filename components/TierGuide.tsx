@@ -1,117 +1,239 @@
-import { PROJECT_TYPES, VENDORS } from "@/lib/pricing";
-import { formatINRCompact, formatRange } from "@/lib/format";
+import Link from "next/link";
+import { DEFAULT_INPUT, DESIGN_LEVELS, FEATURES, PROJECT_TYPES, SCALE_LEVELS, URGENCY, VENDORS } from "@/lib/pricing";
+import { formatINRCompact, formatRange, roundQuote } from "@/lib/format";
+import { inputToQuery } from "@/lib/url";
+import { TypeIcon } from "./ui";
 
-const ACCENTS = [
-  "from-emerald-400/30 to-emerald-400/0",
-  "from-sky-400/30 to-sky-400/0",
-  "from-violet-400/30 to-violet-400/0",
-  "from-fuchsia-400/30 to-fuchsia-400/0",
-  "from-amber-400/30 to-amber-400/0",
-  "from-rose-400/30 to-rose-400/0",
-];
-
-const BARS = [
-  "from-emerald-400 to-emerald-300",
-  "from-sky-400 to-sky-300",
-  "from-violet-500 to-violet-300",
-  "from-fuchsia-500 to-fuchsia-300",
-  "from-amber-500 to-amber-300",
-  "from-rose-500 to-rose-300",
-];
+function H2({ id, n, children, sub }: { id: string; n: string; children: React.ReactNode; sub?: string }) {
+  return (
+    <div id={id} className="mb-6 grid scroll-mt-32 gap-2 border-b-[1.5px] border-ink pb-3 md:grid-cols-[1fr_minmax(0,420px)] md:items-end">
+      <h2 className="flex items-baseline gap-3 text-5xl leading-none">
+        <span className="italic text-accent">{n}</span>
+        {children}
+      </h2>
+      {sub && <p className="text-sm text-ink-2 md:text-right">{sub}</p>}
+    </div>
+  );
+}
 
 export default function TierGuide() {
-  const maxLog = Math.log10(PROJECT_TYPES[PROJECT_TYPES.length - 1].market[1]);
   const minLog = Math.log10(PROJECT_TYPES[0].market[0]);
+  const maxLog = Math.log10(PROJECT_TYPES[PROJECT_TYPES.length - 1].market[1]);
   const pct = (v: number) => ((Math.log10(v) - minLog) / (maxLog - minLog)) * 100;
+  const ticks = [1e4, 1e5, 1e6, 1e7].filter((v) => v >= PROJECT_TYPES[0].market[0]);
+  const small = VENDORS.find((v) => v.id === "small")!;
+  const smallRate = (small.rate[0] + small.rate[1]) / 2;
+  const groups = ["Core", "Commerce", "Engagement", "Advanced"] as const;
+  const maxH = Math.max(...FEATURES.map((f) => f.hours[1]));
 
   return (
-    <section id="tiers" className="relative mx-auto max-w-7xl px-5 py-24">
-      <div className="mb-12 max-w-2xl">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-violet-300">Market price guide · India 2026</p>
-        <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">What websites usually cost — by level</h2>
-        <p className="mt-4 text-zinc-400">
-          Typical INR ranges quoted in the Indian market (excl. 18% GST). The low end is a freelancer or template build, the high end is a
-          reputable agency with custom design. Use this to sanity-check a client&apos;s budget in the first call.
-        </p>
-      </div>
+    <div className="space-y-20">
+      {/* -------- Levels -------- */}
+      <section>
+        <H2 id="levels" n="I" sub="Low end: freelancer or template build. High end: reputable agency, custom design.">
+          Project levels
+        </H2>
 
-      {/* Spectrum bar */}
-      <div className="glass mb-10 rounded-2xl p-6">
-        <div className="mb-4 flex items-center justify-between text-xs text-zinc-500">
-          <span>{formatINRCompact(PROJECT_TYPES[0].market[0])}</span>
-          <span>log scale</span>
-          <span>{formatINRCompact(PROJECT_TYPES[PROJECT_TYPES.length - 1].market[1])}+</span>
-        </div>
-        <div className="space-y-2.5">
-          {PROJECT_TYPES.map((t, i) => (
-            <div key={t.id} className="flex items-center gap-4">
-              <div className="w-44 shrink-0 truncate text-sm text-zinc-300">{t.name}</div>
-              <div className="relative h-3 flex-1 rounded-full bg-white/5">
+        <div className="sheet p-6">
+          <div className="relative h-6">
+            {ticks.map((t) => (
+              <span key={t} className="num absolute -translate-x-1/2 text-[11px] text-zinc-500" style={{ left: `${pct(t)}%` }}>
+                {formatINRCompact(t)}
+              </span>
+            ))}
+          </div>
+          <div className="relative space-y-3">
+            {ticks.map((t) => (
+              <div key={t} className="absolute inset-y-0 border-l border-dashed border-zinc-300" style={{ left: `${pct(t)}%` }} />
+            ))}
+            {PROJECT_TYPES.map((t, i) => (
+              <div key={t.id} className="group relative h-11">
                 <div
-                  className={`absolute h-3 rounded-full bg-gradient-to-r ${BARS[i]}`}
-                  style={{ left: `${pct(t.market[0])}%`, width: `${Math.max(3, pct(t.market[1]) - pct(t.market[0]))}%` }}
-                />
+                  className="absolute top-0 flex h-11 items-center gap-2 overflow-hidden whitespace-nowrap rounded-lg border-[1.5px] border-ink px-3 text-sm font-semibold shadow-[3px_3px_0_var(--color-ink)] transition group-hover:-translate-y-0.5"
+                  style={{
+                    left: `${pct(t.market[0])}%`,
+                    width: `${Math.max(14, pct(t.market[1]) - pct(t.market[0]))}%`,
+                    background: ["#d6f45a", "#fffdf8", "#ffe1d4", "#ff5420", "#2c4bff", "#17140f"][i],
+                    color: i >= 3 ? "#fff" : "#17140f",
+                  }}
+                >
+                  <TypeIcon id={t.id} className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{t.name}</span>
+                  <span className="num ml-auto pl-2 text-xs font-normal opacity-80">{formatRange(t.market[0], t.market[1])}</span>
+                </div>
               </div>
-              <div className="hidden w-40 shrink-0 text-right text-sm font-medium text-white sm:block">
-                {formatRange(t.market[0], t.market[1])}
+            ))}
+          </div>
+          <div className="kicker mt-4 text-right">log scale · INR excl. GST</div>
+        </div>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {PROJECT_TYPES.map((t, i) => (
+            <article key={t.id} className="card group flex flex-col p-6 transition hover:-translate-y-1 hover:border-ink hover:shadow-[5px_5px_0_var(--color-ink)]">
+              <div className="flex items-center justify-between">
+                <span className="grid h-11 w-11 place-items-center rounded-lg border-[1.5px] border-ink bg-paper transition group-hover:bg-accent group-hover:text-white">
+                  <TypeIcon id={t.id} className="h-5 w-5" />
+                </span>
+                <span className="font-display text-4xl italic text-zinc-300">{["i", "ii", "iii", "iv", "v", "vi"][i]}</span>
               </div>
+              <h3 className="mt-4 text-lg font-semibold">{t.name}</h3>
+              <p className="text-sm text-zinc-500">{t.tagline}</p>
+              <div className="num mt-4 text-3xl font-bold tracking-tight">{formatRange(t.market[0], t.market[1])}</div>
+              <div className="num mt-1 text-xs text-zinc-500">
+                {t.typicalWeeks[0]}–{t.typicalWeeks[1]} wk · running {formatRange(t.monthlyRunning[0], t.monthlyRunning[1])}/mo
+              </div>
+              <ul className="mt-4 space-y-1.5 text-sm">
+                {t.includes.map((x) => (
+                  <li key={x} className="flex gap-2">
+                    <span className="text-accent">✦</span>
+                    {x}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 border-t border-dashed border-zinc-300 pt-3 text-xs leading-relaxed text-zinc-600">
+                <span className="kicker mr-1">e.g.</span> {t.examples}
+                <br />
+                <span className="kicker mr-1">stack</span> {t.stack}
+              </p>
+              <Link
+                href={`/estimate?${inputToQuery({ ...DEFAULT_INPUT, projectType: t.id, pages: t.includedPages, features: [] })}`}
+                className="mt-auto pt-4 text-sm font-semibold underline decoration-accent decoration-2 underline-offset-4"
+              >
+                Estimate this type →
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* -------- Vendors -------- */}
+      <section>
+        <H2 id="rates" n="II" sub="Blended rate covers design, development, QA and PM. Tier-2/3 city vendors run about 18% lower.">
+          Vendor rate card
+        </H2>
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {VENDORS.map((v, i) => (
+            <div key={v.id} className="sheet relative overflow-hidden p-5">
+              <div className="kicker">{v.desc}</div>
+              <div className="mt-1 font-display text-3xl leading-none">{v.name}</div>
+              <div className="num mt-5 text-3xl font-bold">
+                ₹{v.rate[0].toLocaleString("en-IN")}
+                <span className="text-zinc-400">–</span>
+                {v.rate[1].toLocaleString("en-IN")}
+              </div>
+              <div className="kicker">per hour, blended</div>
+              <div className="mt-4 h-2 rounded-full bg-zinc-100">
+                <div className="h-2 rounded-full border border-ink bg-accent" style={{ width: `${(v.rate[1] / 5000) * 100}%`, marginLeft: 0 }} />
+              </div>
+              <div className="mt-4 flex justify-between border-t border-dashed border-zinc-300 pt-3 text-xs">
+                <span className="text-zinc-600">{v.fit}</span>
+                <span className="num">~{v.capacity}h/wk</span>
+              </div>
+              <span className="pointer-events-none absolute -right-2 -top-4 font-display text-8xl italic text-zinc-100">{i + 1}</span>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {PROJECT_TYPES.map((t, i) => (
-          <article key={t.id} className="glass group relative overflow-hidden rounded-2xl p-6 transition hover:-translate-y-1 hover:border-white/20">
-            <div className={`pointer-events-none absolute -top-24 right-0 h-48 w-48 rounded-full bg-gradient-to-b ${ACCENTS[i]} blur-2xl`} />
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-zinc-500">Level {i + 1}</div>
-            <h3 className="text-xl font-semibold text-white">{t.name}</h3>
-            <p className="mt-1 text-sm text-zinc-400">{t.tagline}</p>
-            <div className="mt-5 text-3xl font-bold tracking-tight text-white">{formatRange(t.market[0], t.market[1])}</div>
-            <div className="mt-1 text-xs text-zinc-500">
-              {t.typicalWeeks[0]}–{t.typicalWeeks[1]} weeks · running {formatRange(t.monthlyRunning[0], t.monthlyRunning[1])}/mo
+      {/* -------- Features -------- */}
+      <section>
+        <H2
+          id="features"
+          n="III"
+          sub={`Custom-built effort, priced at a small agency (~₹${Math.round(smallRate).toLocaleString("en-IN")}/h). On simple sites plugins cut this to 40–55%.`}
+        >
+          Feature costs
+        </H2>
+        <div className="grid gap-x-10 gap-y-8 lg:grid-cols-2">
+          {groups.map((g) => (
+            <div key={g}>
+              <div className="kicker mb-2">{g}</div>
+              <ul>
+                {FEATURES.filter((f) => f.group === g).map((f) => (
+                  <li key={f.id} className="group grid grid-cols-[1fr_auto] items-center gap-x-4 border-b border-dashed border-zinc-300 py-2.5">
+                    <div>
+                      <div className="font-medium">{f.name}</div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <div className="relative h-1.5 w-full max-w-[220px] rounded-full bg-zinc-100">
+                          <div
+                            className="absolute h-1.5 rounded-full bg-ink transition-colors group-hover:bg-accent"
+                            style={{ left: `${(f.hours[0] / maxH) * 100}%`, width: `${Math.max(3, ((f.hours[1] - f.hours[0]) / maxH) * 100)}%` }}
+                          />
+                        </div>
+                        <span className="num text-[11px] text-zinc-500">
+                          {f.hours[0]}–{f.hours[1]}h
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="num font-semibold">{formatRange(roundQuote(f.hours[0] * smallRate), roundQuote(f.hours[1] * smallRate))}</div>
+                      {f.monthly && <div className="num text-[11px] text-zinc-500">+{formatRange(f.monthly[0], f.monthly[1])}/mo</div>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="mt-5 space-y-1.5 text-sm text-zinc-300">
-              {t.includes.map((x) => (
-                <li key={x} className="flex gap-2">
-                  <span className="text-violet-400">✓</span>
-                  {x}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-5 border-t border-white/5 pt-4 text-xs leading-relaxed text-zinc-500">
-              <span className="text-zinc-400">e.g.</span> {t.examples}
-              <br />
-              <span className="text-zinc-400">Stack:</span> {t.stack}
-            </p>
-          </article>
-        ))}
-      </div>
+          ))}
+        </div>
+      </section>
 
-      <div className="glass mt-10 overflow-x-auto rounded-2xl">
-        <table className="w-full min-w-[640px] text-left text-sm">
-          <thead>
-            <tr className="border-b border-white/5 text-xs uppercase tracking-wider text-zinc-500">
-              <th className="px-6 py-4">Who builds it</th>
-              <th className="px-6 py-4">Team size</th>
-              <th className="px-6 py-4">Blended rate (metro)</th>
-              <th className="px-6 py-4">Best for</th>
-            </tr>
-          </thead>
-          <tbody>
-            {VENDORS.map((v) => (
-              <tr key={v.id} className="border-b border-white/5 last:border-0">
-                <td className="px-6 py-4 font-medium text-white">{v.name}</td>
-                <td className="px-6 py-4 text-zinc-400">{v.desc}</td>
-                <td className="px-6 py-4 text-zinc-200">
-                  ₹{v.rate[0].toLocaleString("en-IN")} – ₹{v.rate[1].toLocaleString("en-IN")}/hr
-                </td>
-                <td className="px-6 py-4 text-zinc-400">{v.fit}</td>
-              </tr>
+      {/* -------- Method -------- */}
+      <section>
+        <H2 id="method" n="IV">
+          How it&apos;s calculated
+        </H2>
+        <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              ["Core hours", "Base effort for the project type, plus 3–6 h per page beyond the included count."],
+              ["Add features", "Hours for each feature not already included, scaled by how heavy that build type is."],
+              ["Apply factors", "Multiply by design × scale × timeline (table on the right)."],
+              ["Price it", "Likely hours × vendor's mid blended rate (×0.82 Tier-2/3). Range −15% / +20%, rounded to quotable figures."],
+            ].map(([t, d], i) => (
+              <div key={t} className="card p-5">
+                <div className="font-display text-4xl italic text-accent">{String(i + 1).padStart(2, "0")}</div>
+                <div className="mt-2 font-semibold">{t}</div>
+                <p className="mt-1 text-sm text-ink-2">{d}</p>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
+            <div className="sheet bg-cobalt p-5 text-white sm:col-span-2">
+              <div className="font-display text-3xl">
+                + AI <em>deep research</em>
+              </div>
+              <p className="mt-2 text-sm text-white/85">
+                Reads the brief for the real system and hidden scope, searches current Indian rate cards, comparable quotes and running costs, then
+                prices bottom-up by module and cross-checks against the comparables. Sources and confidence included.
+              </p>
+            </div>
+          </div>
+          <div className="sheet self-start overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="kicker border-b-[1.5px] border-ink bg-ink text-left">
+                  <th className="px-5 py-2.5 font-normal !text-paper/70">Factor</th>
+                  <th className="px-5 py-2.5 font-normal !text-paper/70">Option</th>
+                  <th className="px-5 py-2.5 text-right font-normal !text-paper/70">×</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ...DESIGN_LEVELS.map((d) => ["Design", d.name, d.mult]),
+                  ...SCALE_LEVELS.map((s) => ["Scale", s.name, s.mult]),
+                  ...URGENCY.map((u) => ["Timeline", u.name, u.mult]),
+                ].map(([f, n, m]) => (
+                  <tr key={`${f}-${n}`} className="border-b border-dashed border-zinc-300 last:border-0">
+                    <td className="kicker px-5 py-2.5">{f}</td>
+                    <td className="px-5 py-2.5">{n}</td>
+                    <td className={`num px-5 py-2.5 text-right font-semibold ${Number(m) > 1 ? "text-accent" : Number(m) < 1 ? "text-moss" : ""}`}>
+                      {Number(m).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
