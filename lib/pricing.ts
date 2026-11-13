@@ -427,7 +427,7 @@ export function computeBaseline(rawInput: EstimateInput): BaselineResult {
   if (input.myRate > 0) quotes.push(quoteFor(ownVendor(input.myRate), input.myRate));
 
   const selected = quotes.find((q) => q.vendor.id === input.vendor) ?? quotes[1];
-  const amc: [number, number] = [roundQuote(selected.likely * 0.15), roundQuote(selected.likely * 0.22)];
+  const amc = amcRange(input, selected.likely);
 
   return {
     type,
@@ -442,6 +442,26 @@ export function computeBaseline(rawInput: EstimateInput): BaselineResult {
     domainYearly: [800, 1_500],
     confidence,
   };
+}
+
+/**
+ * Annual maintenance contract (AMC): bug fixes, security/plugin updates, backups,
+ * uptime monitoring and small content changes. Published 2026 Indian figures:
+ * small sites ~₹1.5–10K/yr (basic) to ₹12–60K/yr (retainer), e-commerce ₹10–25K/yr,
+ * apps 15–20% of build per year. Hosting and third-party fees are separate (running costs).
+ */
+export function amcRange(rawInput: EstimateInput, buildPrice: number): [number, number] {
+  const input = normalizeInput(rawInput);
+  const appLike =
+    ["webapp", "platform", "enterprise"].includes(input.projectType) ||
+    (input.projectType === "ecommerce" && input.ecomPlatform === "custom") ||
+    input.features.includes("mobile");
+  const [pLo, pHi, fLo, fHi] = appLike
+    ? [0.15, 0.2, 25_000, 50_000]
+    : input.projectType === "ecommerce"
+      ? [0.12, 0.18, 10_000, 25_000]
+      : [0.1, 0.18, 4_000, 9_000];
+  return [roundQuote(Math.max(fLo, buildPrice * pLo)), roundQuote(Math.max(fHi, buildPrice * pHi))];
 }
 
 export function describeInput(rawInput: EstimateInput): string {

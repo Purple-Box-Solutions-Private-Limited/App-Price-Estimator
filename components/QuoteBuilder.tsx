@@ -5,7 +5,7 @@ import { formatINR, formatRange, roundQuote } from "@/lib/format";
 import type { SavedQuote } from "@/lib/saved";
 import { RollingNumber } from "./ui";
 
-export const DEFAULT_QUOTE: SavedQuote = { markup: 0, discount: 0, gst: true };
+export const DEFAULT_QUOTE: SavedQuote = { markup: 0, discount: 0, gst: true, amc: true };
 
 const DEFAULT_MILESTONES = [
   { milestone: "Advance on signing", percent: 40 },
@@ -21,6 +21,8 @@ export interface QuoteBasis {
   high: number;
   weeks: [number, number];
   monthly: [number, number];
+  /** Annual maintenance (AMC) range, yearly, excl. GST */
+  amc: [number, number];
   scope: string[];
   assumptions: string[];
   milestones?: { milestone: string; percent: number }[];
@@ -69,6 +71,7 @@ export default function QuoteBuilder({
   const [date, setDate] = useState("");
   useEffect(() => setDate(new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })), []);
   const { markup, discount, gst } = value;
+  const showAmc = value.amc !== false;
 
   const listPrice = roundQuote(basis.likely * (1 + markup / 100));
   const discountAmt = Math.round((listPrice * discount) / 100);
@@ -76,6 +79,10 @@ export default function QuoteBuilder({
   const gstAmt = gst ? Math.round(subtotal * 0.18) : 0;
   const total = subtotal + gstAmt;
   const milestones = basis.milestones?.length ? basis.milestones : DEFAULT_MILESTONES;
+  // Same margin as the build, rounded to a quotable yearly figure
+  const amcYear = roundQuote(((basis.amc[0] + basis.amc[1]) / 2) * (1 + markup / 100));
+  const amcMonth = Math.round(amcYear / 12 / 100) * 100;
+  const AMC_INCLUDES = "bug fixes, security & plugin updates, backups, uptime monitoring and small content changes (up to ~2 h/month)";
 
   const quoteText = [
     `Quotation${clientName ? `: ${clientName}` : ""}`,
@@ -91,6 +98,10 @@ export default function QuoteBuilder({
     ``,
     `Timeline: ${basis.weeks[0]}–${basis.weeks[1]} weeks`,
     `Running costs after launch (paid by client): ${formatRange(basis.monthly[0], basis.monthly[1])}/month`,
+    `Free bug-fix warranty: 30 days after launch`,
+    ...(showAmc
+      ? [``, `Annual maintenance (optional, from month 2): ${formatINR(amcYear)}/year + GST (≈ ${formatINR(amcMonth)}/month). Covers ${AMC_INCLUDES}.`]
+      : []),
     ``,
     `Payment schedule:`,
     ...milestones.map((m) => `• ${m.percent}%: ${m.milestone} (${formatINR((total * m.percent) / 100)})`),
@@ -140,6 +151,20 @@ export default function QuoteBuilder({
             Add 18% GST
             <span className={`relative h-6 w-11 rounded-full border-[1.5px] border-ink transition ${gst ? "bg-accent" : "bg-paper-2"}`}>
               <span className={`absolute top-0.5 h-4 w-4 rounded-full border-[1.5px] border-ink bg-sheet transition-all ${gst ? "left-5" : "left-0.5"}`} />
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ ...value, amc: !showAmc })}
+            aria-pressed={showAmc}
+            className="flex w-full items-center justify-between rounded-[10px] border-[1.5px] border-ink bg-sheet px-3 py-2.5 text-left text-sm font-medium"
+          >
+            <span>
+              Offer maintenance (AMC)
+              <span className="num block text-xs font-normal text-zinc-500">{formatINR(amcYear)}/yr · separate from total</span>
+            </span>
+            <span className={`relative h-6 w-11 shrink-0 rounded-full border-[1.5px] border-ink transition ${showAmc ? "bg-accent" : "bg-paper-2"}`}>
+              <span className={`absolute top-0.5 h-4 w-4 rounded-full border-[1.5px] border-ink bg-sheet transition-all ${showAmc ? "left-5" : "left-0.5"}`} />
             </span>
           </button>
         </div>
@@ -240,6 +265,26 @@ export default function QuoteBuilder({
                 <RollingNumber value={total} format={formatINR} className="text-2xl font-bold text-lime" />
               </div>
             </div>
+          </section>
+
+          <section className="mt-8 grid gap-4 md:grid-cols-[1fr_minmax(0,320px)]">
+            <div className="text-sm">
+              <div className="kicker mb-1">After launch</div>
+              <p className="text-ink-2">
+                <span className="font-semibold text-ink">30-day free bug-fix warranty.</span> Hosting, domain and third-party fees (
+                {formatRange(basis.monthly[0], basis.monthly[1])}/mo) are paid by the client directly.
+              </p>
+            </div>
+            {showAmc && (
+              <div className="rounded-lg border-[1.5px] border-dashed border-ink p-4 text-sm">
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="kicker">Annual maintenance · optional</span>
+                  <span className="num font-semibold">{formatINR(amcYear)}/yr</span>
+                </div>
+                <div className="num mt-0.5 text-right text-xs text-zinc-500">≈ {formatINR(amcMonth)}/month + GST, from month 2</div>
+                <p className="mt-2 text-xs text-ink-2">Covers {AMC_INCLUDES}. New features quoted separately.</p>
+              </div>
+            )}
           </section>
 
           {basis.assumptions.length > 0 && (

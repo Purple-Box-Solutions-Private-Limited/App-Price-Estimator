@@ -16,6 +16,8 @@ export interface SavedQuote {
   markup: number;
   discount: number;
   gst: boolean;
+  /** Show the optional annual maintenance (AMC) offer on the quote */
+  amc?: boolean;
 }
 
 export interface SavedEstimate {

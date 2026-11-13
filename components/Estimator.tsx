@@ -12,6 +12,7 @@ import {
   SCALE_LEVELS,
   URGENCY,
   VENDORS,
+  amcRange,
   computeBaseline,
   normalizeInput,
   type EstimateInput,
@@ -306,6 +307,7 @@ export default function Estimator({ initialInput, initialName, savedId }: { init
         scope: estimate!.modules.map((m) => m.name),
         assumptions: estimate!.assumptions,
         milestones: estimate!.paymentMilestones,
+        amc: amcRange(input, estimate!.recommended.mostLikelyINR),
       }
     : {
         source: "instant",
@@ -315,6 +317,7 @@ export default function Estimator({ initialInput, initialName, savedId }: { init
         high: baseline.selected.high,
         weeks: baseline.selected.weeks,
         monthly: baseline.monthly,
+        amc: baseline.amc,
         scope: baseline.lineItems.map((l) => l.name),
         assumptions: [
           `${DESIGN_LEVELS.find((d) => d.id === input.design)!.name} design`,
