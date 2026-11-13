@@ -54,7 +54,7 @@ export default function BaselinePanel({ baseline, city, stale }: { baseline: Bas
           ))}
           {Math.abs(baseline.multiplier - 1) > 0.01 && (
             <li className="flex items-baseline text-zinc-600">
-              <span>design · scale · timeline</span>
+              <span>scale · timeline</span>
               <span className="dots" />
               <span>×{baseline.multiplier.toFixed(2)}</span>
             </li>

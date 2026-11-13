@@ -75,41 +75,44 @@ Notes on the particle field:
 
 The numbers in `lib/pricing.ts` were last calibrated in November 2026 against published Indian 2026 pricing. Most of these sources are vendor or agency pages, so treat them as a market consensus, not audited data. Recalibrate when you have real quotes.
 
+**Principle: honest hours, real rates.** Each feature line shows hands-on build time for a competent 2026 team using managed auth, payment SDKs, component kits, CMS/plugins and AI-assisted coding. Design, QA, project management and deployment are their own visible lines. The price comes from realistic hours × market rates, not padded hours. For example, login on a web app is 3–8h (1–4h on a plugin-based site), and a Razorpay checkout is 3–9h.
+
 **Blended rates (metro; Tier-2/3 vendors ×0.82)**
 
 | Vendor | Rate | Evidence |
 |---|---|---|
-| Freelancer | ₹400–1,200/hr | Domestic freelancers ₹500–2,500/hr; most SMB work sits in the lower half |
-| Small agency | ₹900–1,800/hr | Indian firms $10–40/hr |
-| Mid-size agency | ₹1,800–3,200/hr | Clutch-listed mid-size Indian firms are commonly $25–49/hr |
-| Premium | ₹3,200–6,000/hr | Top studios, $40–70/hr |
+| Freelancer | ₹600–1,600/hr | Domestic freelancers ₹500–2,500/hr, midpoint about ₹1,500 |
+| Small agency | ₹1,300–2,400/hr | Indian firms $10–40/hr |
+| Mid-size agency | ₹2,200–3,800/hr | Clutch-listed mid-size Indian firms are commonly $25–49/hr |
+| Premium | ₹3,800–7,000/hr | Top studios, $45–80/hr |
 
-**What the engine models**
-- Effort hours per project type and per feature, for modern stacks: auth libraries, payment SDKs, AI-assisted coding.
-- Feature hours are scaled by build type. A plugin on a business site costs far less than a custom module in a web app.
-- E-commerce is priced by **platform**: Shopify 30–70h core, WooCommerce 45–100h, custom 160–340h.
-- Mobile apps are cross-platform builds, 220–480h for the first app. Each extra app (vendor, delivery) adds about 60%, because they share the backend and components.
-- Timelines assume one project gets 25 / 35 / 60 / 90 hours a week (freelancer / small / mid / premium), plus one week for feedback and launch.
-- The price range is −15% / +20% for a detailed brief. It widens to about −25% / +35% when the brief is short or the project is large, and the receipt says why.
-- A **"Me / my team"** rate prices the scope at your own hourly rate, alongside the market quotes.
+**How hours are built**
+- **Core build** for the type. It is scaled down when the site has fewer pages than the type includes, so a 1-page site isn't priced as 5 pages.
+- **Extra pages** add 1–3h each.
+- **Features** use modern hands-on hours, scaled by build type (plugins vs custom).
+- **E-commerce** is priced by platform: Shopify 14–32h core, WooCommerce 20–45h, custom 70–150h.
+- **Mobile apps** are 120–280h per cross-platform app. Each extra app adds about 60%.
+- **Design** is 8% / 25% / 45% of build time (template / custom / premium), with a minimum. **QA** is 12% of build. **PM and client calls** are 10%. **Deployment** is 2–40h depending on project size.
+- **Scale and timeline** multipliers apply on top. **Timelines** assume 25 / 35 / 60 / 90 hours a week per project, plus one week for feedback and launch.
+- **Price range** is −15% / +20% for a detailed brief, wider for thin briefs or large projects.
 
-**Check:** 15 reference projects, each compared with its published market band. Most-likely price, excl. GST:
+**Check:** 16 reference projects, each compared with its published market band. Most-likely price, excl. GST:
 
-| Scenario | Instant (likely) | Published market band |
-|---|---|---|
-| 5-page template landing, freelancer | ₹12K | ₹5K–40K |
-| 12-page custom business site, small agency | ₹76K | ₹50K–1.5L |
-| Clinic site with booking, alerts, admin and maps, small agency | ₹1.4L | ₹80K–2L |
-| Shopify template store, freelancer | ₹31K | ₹15K–65K |
-| Shopify D2C with custom theme, small agency | ₹1.5L | ₹85K–2.4L |
-| WooCommerce store, freelancer | ₹72K | ₹25K–1L |
-| Custom store, small agency | ₹4.65L | ₹2.5L–8L |
-| CRM web app, freelancer | ₹2.5L | ₹1L–3L |
-| School ERP with parent app, small agency | ₹11L | ₹6L–18L |
-| SaaS MVP, small agency | ₹9.65L | ₹4L–15L |
-| Marketplace with 3 apps, mid-size agency | ₹49L | ₹20L–55L |
-| Enterprise portal, premium | ₹87.5L | ₹60L–1.5Cr |
+| Scenario | Hours | Instant (likely) | Published market band |
+|---|---|---|---|
+| 1-page template landing, freelancer | 10–20h | ₹17K | ₹5K–25K |
+| 12-page custom business site, small agency | 30–66h | ₹89K | ₹50K–1.5L |
+| Clinic site with booking, alerts, admin and maps, small agency | 45–107h | ₹1.4L | ₹80K–2L |
+| Shopify template store, freelancer | 22–48h | ₹39K | ₹15K–65K |
+| Shopify D2C with custom theme, small agency | 49–107h | ₹1.45L | ₹85K–2.4L |
+| WooCommerce store, freelancer | 42–90h | ₹73K | ₹25K–1L |
+| Custom store, small agency | 151–341h | ₹4.55L | ₹2.5L–8L |
+| CRM web app, freelancer | 142–315h | ₹2.5L | ₹1L–3L |
+| School ERP with parent app, small agency | 378–901h | ₹11.75L | ₹6L–18L |
+| SaaS MVP, small agency | 337–707h | ₹9.65L | ₹4L–15L |
+| Marketplace with 3 apps, mid-size agency | 950–2,150h | ₹46.5L | ₹20L–55L |
+| Enterprise portal, premium | 996–2,150h | ₹85L | ₹60L–1.5Cr |
 
-All 15 land inside their band. A live AI research run on a 6-page clinic site with booking (Tier-2 small agency) gave ₹85K–1.3L, close to the instant engine.
+All 16 land inside their band. A live AI research run on a 6-page clinic site with booking (Tier-2 small agency) gave ₹85K–1.3L, close to the instant engine.
 
 Sources: [Hostinger India: website cost](https://www.hostinger.com/in/tutorials/website-cost), [Hostinger India: e-commerce cost](https://www.hostinger.com/in/tutorials/ecommerce-website-cost/), [Upgrowth design cost guide](https://upgrowth.in/website-design-cost-guide-in-india/), [Freelance Rates India calculator](https://freelanceratesindia.pages.dev/calculator/freelance-rate/web-developer), [Zartek app cost 2026](https://www.zartek.in/app-development-cost-in-india-2026/), [Riolabz app cost 2026](https://www.riolabz.com/blogs/cost-of-mobile-app-development-in-india-in-2026), [Clutch India web developers](https://clutch.co/web-developers/india.md).

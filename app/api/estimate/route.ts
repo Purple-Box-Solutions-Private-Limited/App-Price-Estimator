@@ -33,7 +33,9 @@ Principles:
 - Be grounded. Every number must be explainable from scope (hours) x realistic Indian rates, or from comparable published prices. No inflated "global agency" numbers, no USD-converted Western rates unless the vendor type is premium.
 - Understand the real system first: identify what kind of product this is (e.g. "a brochure site" vs "a booking platform" vs "a multi-vendor marketplace"), and infer the hidden scope a client usually forgets (admin panel, notifications, payment reconciliation, hosting, testing, deployment, content entry).
 - Prices are in INR, exclusive of 18% GST, rounded to quote-friendly figures (nearest ₹1,000 below ₹1 lakh, nearest ₹5,000 below ₹10 lakh, nearest ₹25,000 above).
-- Use Indian context: Razorpay/PayU/Cashfree, UPI, Shiprocket, MSG91/Gupshup/WhatsApp Business API, AWS Mumbai / DigitalOcean Bangalore, Hostinger/GoDaddy India, DPDP Act 2023, GST.`;
+- Use Indian context: Razorpay/PayU/Cashfree, UPI, Shiprocket, MSG91/Gupshup/WhatsApp Business API, AWS Mumbai / DigitalOcean Bangalore, Hostinger/GoDaddy India, DPDP Act 2023, GST.
+- Hours must be credible to an experienced developer reading the breakdown. Assume a competent 2026 team using managed auth (Clerk/Supabase/NextAuth/Firebase), payment SDKs, component kits, CMS/plugins and AI-assisted coding. Typical hands-on build time: login/signup with OTP or Google 3-8h, Razorpay checkout + webhook 4-10h, email/WhatsApp alerts 3-8h, CRUD admin 10-24h, booking with slots 10-26h, a static page 1-3h. Never pad a feature line to reach a price.
+- Put design, QA & testing, project management and deployment in their own modules instead of hiding them inside feature hours. The price comes from honest hours x realistic Indian rates (freelancers ~Rs 600-1,600/h, small agencies ~Rs 1,300-2,400/h, mid-size ~Rs 2,200-3,800/h, premium ~Rs 3,800-7,000/h), not from inflated hours.`;
 
 /** JSON Schema for the estimate, embedded in the prompt (computed once per server start). */
 const ESTIMATE_JSON_SCHEMA = JSON.stringify(z.toJSONSchema(EstimateSchema, { io: "input" }));

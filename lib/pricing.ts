@@ -46,7 +46,7 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "Landing / Static Site",
     tagline: "1–5 pages, fast, no backend",
     examples: "Event page, portfolio, product launch, doctor/CA profile",
-    hours: [12, 26],
+    hours: [6, 14],
     includedPages: 5,
     market: [5_000, 50_000],
     typicalWeeks: [1, 2],
@@ -60,7 +60,7 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "Business / CMS Website",
     tagline: "5–20 pages, editable content",
     examples: "Company site, school, clinic, real-estate builder, restaurant",
-    hours: [30, 60],
+    hours: [14, 30],
     includedPages: 10,
     market: [25_000, 2_50_000],
     typicalWeeks: [2, 5],
@@ -74,7 +74,7 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "E-commerce Store",
     tagline: "Catalog, cart, payments, orders",
     examples: "D2C brand, boutique, grocery, electronics store",
-    hours: [60, 130],
+    hours: [30, 70],
     includedPages: 12,
     market: [20_000, 8_00_000],
     typicalWeeks: [3, 10],
@@ -88,7 +88,7 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "Custom Web Application",
     tagline: "Logins, dashboards, workflows",
     examples: "Booking system, CRM, LMS, portal, internal tool",
-    hours: [200, 420],
+    hours: [90, 200],
     includedPages: 15,
     market: [1_50_000, 15_00_000],
     typicalWeeks: [8, 20],
@@ -102,7 +102,7 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "SaaS / Marketplace",
     tagline: "Multi-sided, subscriptions, scale",
     examples: "Multi-vendor marketplace, SaaS product, aggregator, fintech/edtech app",
-    hours: [480, 950],
+    hours: [220, 460],
     includedPages: 25,
     market: [6_00_000, 55_00_000],
     typicalWeeks: [16, 36],
@@ -116,7 +116,7 @@ export const PROJECT_TYPES: ProjectType[] = [
     name: "Enterprise System",
     tagline: "Integrations, compliance, high scale",
     examples: "ERP/CRM integrated portal, banking/insurance, government, hospital system",
-    hours: [1200, 2600],
+    hours: [650, 1400],
     includedPages: 40,
     market: [50_00_000, 1_50_00_000],
     typicalWeeks: [26, 60],
@@ -137,40 +137,41 @@ export interface Feature {
 }
 
 export const FEATURES: Feature[] = [
-  { id: "auth", name: "User accounts & login", hours: [8, 20], includedIn: ["webapp", "platform", "enterprise"], group: "Core" },
-  { id: "admin", name: "Admin dashboard", hours: [20, 50], includedIn: ["webapp", "platform", "enterprise"], group: "Core" },
-  { id: "cms", name: "Blog / CMS", hours: [6, 14], includedIn: ["business"], group: "Core" },
-  { id: "seo", name: "SEO setup & speed optimisation", hours: [6, 14], group: "Core" },
-  { id: "multilang", name: "Multi-language (Hindi/regional)", hours: [12, 30], group: "Core" },
-  { id: "search", name: "Advanced search & filters", hours: [10, 28], group: "Core" },
-  { id: "roles", name: "Roles & permissions", hours: [10, 28], includedIn: ["enterprise"], group: "Core" },
+  { id: "auth", name: "User accounts & login", hours: [3, 8], includedIn: ["webapp", "platform", "enterprise"], group: "Core" },
+  { id: "admin", name: "Admin dashboard", hours: [10, 24], includedIn: ["webapp", "platform", "enterprise"], group: "Core" },
+  { id: "cms", name: "Blog / CMS", hours: [3, 6], includedIn: ["business"], group: "Core" },
+  { id: "seo", name: "SEO setup & speed optimisation", hours: [3, 6], group: "Core" },
+  { id: "multilang", name: "Multi-language (Hindi/regional)", hours: [6, 16], group: "Core" },
+  { id: "search", name: "Advanced search & filters", hours: [4, 12], group: "Core" },
+  { id: "roles", name: "Roles & permissions", hours: [4, 12], includedIn: ["enterprise"], group: "Core" },
 
-  { id: "payments", name: "Payment gateway (Razorpay/UPI)", hours: [8, 20], includedIn: ["ecommerce"], group: "Commerce" },
-  { id: "catalog", name: "Product catalog & cart", hours: [25, 60], includedIn: ["ecommerce"], group: "Commerce" },
-  { id: "booking", name: "Booking / appointments", hours: [24, 60], group: "Commerce" },
-  { id: "subscriptions", name: "Subscription billing", hours: [20, 50], includedIn: ["platform"], group: "Commerce" },
-  { id: "multivendor", name: "Multi-vendor marketplace", hours: [80, 180], group: "Commerce" },
-  { id: "gst", name: "GST invoicing & reports", hours: [12, 30], group: "Commerce" },
+  { id: "payments", name: "Payment gateway (Razorpay/UPI)", hours: [4, 10], includedIn: ["ecommerce"], group: "Commerce" },
+  { id: "catalog", name: "Product catalog & cart", hours: [12, 30], includedIn: ["ecommerce"], group: "Commerce" },
+  { id: "booking", name: "Booking / appointments", hours: [10, 26], group: "Commerce" },
+  { id: "subscriptions", name: "Subscription billing", hours: [8, 20], includedIn: ["platform"], group: "Commerce" },
+  { id: "multivendor", name: "Multi-vendor marketplace", hours: [40, 90], group: "Commerce" },
+  { id: "gst", name: "GST invoicing & reports", hours: [6, 14], group: "Commerce" },
 
-  { id: "notifications", name: "Email / SMS / WhatsApp alerts", hours: [8, 20], monthly: [500, 5_000], group: "Engagement" },
-  { id: "chat", name: "Real-time chat", hours: [30, 80], monthly: [0, 3_000], group: "Engagement" },
-  { id: "maps", name: "Maps & location", hours: [6, 18], monthly: [0, 4_000], group: "Engagement" },
-  { id: "reviews", name: "Ratings & reviews", hours: [8, 20], group: "Engagement" },
-  { id: "analytics", name: "Analytics & reports dashboard", hours: [20, 55], group: "Engagement" },
+  { id: "notifications", name: "Email / SMS / WhatsApp alerts", hours: [3, 8], monthly: [500, 5_000], group: "Engagement" },
+  { id: "chat", name: "Real-time chat", hours: [12, 32], monthly: [0, 3_000], group: "Engagement" },
+  { id: "maps", name: "Maps & location", hours: [2, 6], monthly: [0, 4_000], group: "Engagement" },
+  { id: "reviews", name: "Ratings & reviews", hours: [3, 8], group: "Engagement" },
+  { id: "analytics", name: "Analytics & reports dashboard", hours: [8, 24], group: "Engagement" },
 
-  { id: "ai", name: "AI chatbot / recommendations", hours: [24, 80], monthly: [2_000, 20_000], group: "Advanced" },
-  { id: "integrations", name: "3rd-party API integrations", hours: [12, 40], group: "Advanced" },
-  { id: "erp", name: "ERP / CRM / Tally integration", hours: [40, 120], group: "Advanced" },
-  { id: "migration", name: "Data migration from old system", hours: [12, 40], group: "Advanced" },
-  { id: "mobile", name: "Mobile app (Android + iOS)", hours: [220, 480], monthly: [700, 2_000], group: "Advanced" },
-  { id: "pwa", name: "PWA / offline support", hours: [10, 24], group: "Advanced" },
+  { id: "ai", name: "AI chatbot / recommendations", hours: [10, 32], monthly: [2_000, 20_000], group: "Advanced" },
+  { id: "integrations", name: "3rd-party API integrations", hours: [6, 16], group: "Advanced" },
+  { id: "erp", name: "ERP / CRM / Tally integration", hours: [20, 60], group: "Advanced" },
+  { id: "migration", name: "Data migration from old system", hours: [6, 20], group: "Advanced" },
+  { id: "mobile", name: "Mobile app (Android + iOS)", hours: [120, 280], monthly: [700, 2_000], group: "Advanced" },
+  { id: "pwa", name: "PWA / offline support", hours: [4, 10], group: "Advanced" },
 ];
 
 export type DesignLevel = "template" | "custom" | "premium";
-export const DESIGN_LEVELS: { id: DesignLevel; name: string; desc: string; mult: number }[] = [
-  { id: "template", name: "Template-based", desc: "Customised premium theme", mult: 0.78 },
-  { id: "custom", name: "Custom UI/UX", desc: "Figma design, unique layout", mult: 1.0 },
-  { id: "premium", name: "Premium / branded", desc: "Motion, illustrations, design system", mult: 1.25 },
+/** Design time as a share of build time, with a floor so tiny builds still get real design hours. */
+export const DESIGN_LEVELS: { id: DesignLevel; name: string; desc: string; pct: number; min: [number, number] }[] = [
+  { id: "template", name: "Template-based", desc: "Customised premium theme", pct: 0.08, min: [2, 4] },
+  { id: "custom", name: "Custom UI/UX", desc: "Figma design, unique layout", pct: 0.25, min: [6, 12] },
+  { id: "premium", name: "Premium / branded", desc: "Motion, illustrations, design system", pct: 0.45, min: [14, 28] },
 ];
 
 export type ScaleLevel = "standard" | "growth" | "critical";
@@ -202,14 +203,14 @@ export interface Vendor {
 
 /**
  * Market vendors. Rates recalibrated Nov 2026 against published Indian data:
- * domestic freelancers ₹500–2,500/h (most SMB work in the lower half),
+ * domestic freelancers ₹500–2,500/h (midpoint ~₹1,500),
  * Indian firms $10–40/h, Clutch-listed mid-size firms commonly $25–49/h.
  */
 export const VENDORS: Vendor[] = [
-  { id: "freelancer", name: "Freelancer", desc: "1–2 people", rate: [400, 1_200], capacity: 25, fit: "Budget, simple scope" },
-  { id: "small", name: "Small Agency", desc: "5–20 people", rate: [900, 1_800], capacity: 35, fit: "Most SMB projects" },
-  { id: "mid", name: "Mid-size Agency", desc: "20–150 people", rate: [1_800, 3_200], capacity: 60, fit: "Funded startups, complex apps" },
-  { id: "premium", name: "Premium / Tier-1", desc: "Top studios & IT firms", rate: [3_200, 6_000], capacity: 90, fit: "Enterprise, brand-critical" },
+  { id: "freelancer", name: "Freelancer", desc: "1–2 people", rate: [600, 1_600], capacity: 25, fit: "Budget, simple scope" },
+  { id: "small", name: "Small Agency", desc: "5–20 people", rate: [1_300, 2_400], capacity: 35, fit: "Most SMB projects" },
+  { id: "mid", name: "Mid-size Agency", desc: "20–150 people", rate: [2_200, 3_800], capacity: 60, fit: "Funded startups, complex apps" },
+  { id: "premium", name: "Premium / Tier-1", desc: "Top studios & IT firms", rate: [3_800, 7_000], capacity: 90, fit: "Enterprise, brand-critical" },
 ];
 
 /** "Me / my team": prices the same scope at the user's own hourly rate. */
@@ -236,9 +237,9 @@ export const ECOM_PLATFORMS: {
   featureScale: number;
   monthly: [number, number];
 }[] = [
-  { id: "shopify", name: "Shopify", desc: "Theme + apps, fastest", hours: [30, 70], featureScale: 0.45, monthly: [2_500, 12_000] },
-  { id: "woocommerce", name: "WooCommerce", desc: "WordPress + plugins", hours: [45, 100], featureScale: 0.55, monthly: [1_000, 6_000] },
-  { id: "custom", name: "Custom build", desc: "Own storefront + backend", hours: [160, 340], featureScale: 0.85, monthly: [3_000, 20_000] },
+  { id: "shopify", name: "Shopify", desc: "Theme + apps, fastest", hours: [14, 32], featureScale: 0.5, monthly: [2_500, 12_000] },
+  { id: "woocommerce", name: "WooCommerce", desc: "WordPress + plugins", hours: [20, 45], featureScale: 0.6, monthly: [1_000, 6_000] },
+  { id: "custom", name: "Custom build", desc: "Own storefront + backend", hours: [70, 150], featureScale: 0.9, monthly: [3_000, 20_000] },
 ];
 
 export interface EstimateInput {
@@ -319,14 +320,17 @@ export function computeBaseline(rawInput: EstimateInput): BaselineResult {
   const input = normalizeInput(rawInput);
   const type = PROJECT_TYPES.find((t) => t.id === input.projectType) ?? PROJECT_TYPES[1];
   const platform = type.id === "ecommerce" ? ECOM_PLATFORMS.find((p) => p.id === input.ecomPlatform) ?? ECOM_PLATFORMS[0] : null;
-  const coreHours = platform ? platform.hours : type.hours;
+  // Fewer pages than the type includes = smaller core (a 1-page site is not a 5-page site), down to 50%.
+  const pageFactor = input.pages < type.includedPages ? 0.5 + 0.5 * (input.pages / type.includedPages) : 1;
+  const baseCore = platform ? platform.hours : type.hours;
+  const coreHours: [number, number] = [Math.max(2, Math.round(baseCore[0] * pageFactor)), Math.max(4, Math.round(baseCore[1] * pageFactor))];
   const featureScale = platform ? platform.featureScale : type.featureScale;
 
   const lineItems: LineItem[] = [{ name: platform ? `${platform.name} store — core build` : `${type.name} — core build`, hours: coreHours }];
 
   const extraPages = Math.max(0, input.pages - type.includedPages);
   if (extraPages > 0) {
-    lineItems.push({ name: `${extraPages} additional pages/screens`, hours: [extraPages * 2, extraPages * 5] });
+    lineItems.push({ name: `${extraPages} additional pages/screens`, hours: [extraPages * 1, extraPages * 3] });
   }
 
   let monthlyLo = platform ? platform.monthly[0] : type.monthlyRunning[0];
@@ -349,14 +353,37 @@ export function computeBaseline(rawInput: EstimateInput): BaselineResult {
     });
   }
 
+  // Hands-on build time so far. Everything a real team also spends time on is added
+  // as its own visible line, so no single feature line is padded.
+  const buildLo = lineItems.reduce((s, l) => s + l.hours[0], 0);
+  const buildHi = lineItems.reduce((s, l) => s + l.hours[1], 0);
+  const design = DESIGN_LEVELS.find((d) => d.id === input.design)!;
+  const designH: [number, number] = [
+    Math.max(design.min[0], Math.round(buildLo * design.pct)),
+    Math.max(design.min[1], Math.round(buildHi * design.pct)),
+  ];
+  const qaH: [number, number] = [Math.max(1, Math.round(buildLo * 0.12)), Math.max(2, Math.round(buildHi * 0.12))];
+  const pmH: [number, number] = [
+    Math.max(1, Math.round((buildLo + designH[0] + qaH[0]) * 0.1)),
+    Math.max(2, Math.round((buildHi + designH[1] + qaH[1]) * 0.1)),
+  ];
+  const big = type.id === "enterprise";
+  const appLike = ["webapp", "platform"].includes(type.id) || platform?.id === "custom" || input.features.includes("mobile");
+  const deployH: [number, number] = big ? [16, 40] : appLike ? [6, 14] : [2, 4];
+  lineItems.push(
+    { name: `${design.name} design`, hours: designH },
+    { name: "QA & testing", hours: qaH },
+    { name: "Project management & client calls", hours: pmH },
+    { name: input.features.includes("mobile") ? "Deployment, app-store release & handover" : "Deployment & handover", hours: deployH },
+  );
+
   const rawLo = lineItems.reduce((s, l) => s + l.hours[0], 0);
   const rawHi = lineItems.reduce((s, l) => s + l.hours[1], 0);
-  const design = DESIGN_LEVELS.find((d) => d.id === input.design)!;
   const scale = SCALE_LEVELS.find((s) => s.id === input.scale)!;
   const urgency = URGENCY.find((u) => u.id === input.urgency)!;
   const city = CITY_TIERS.find((c) => c.id === input.city)!;
 
-  const multiplier = design.mult * scale.mult * urgency.mult;
+  const multiplier = scale.mult * urgency.mult;
   const hours: [number, number] = [Math.round(rawLo * multiplier), Math.round(rawHi * multiplier)];
   const hoursLikely = (hours[0] + hours[1]) / 2;
 

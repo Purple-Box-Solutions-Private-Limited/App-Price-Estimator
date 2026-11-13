@@ -140,7 +140,7 @@ export default function TierGuide() {
         <H2
           id="features"
           n="III"
-          sub={`Custom-built effort, priced at a small agency (~₹${Math.round(smallRate).toLocaleString("en-IN")}/h). On simple sites plugins cut this to 40–55%.`}
+          sub={`Hands-on build time for a modern team (managed auth, SDKs, AI-assisted coding), priced at a small agency (~₹${Math.round(smallRate).toLocaleString("en-IN")}/h). On plugin-based sites it's about half. Design, QA, PM and deployment are added separately.`}
         >
           Feature costs
         </H2>
@@ -185,10 +185,10 @@ export default function TierGuide() {
         <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
           <div className="grid gap-4 sm:grid-cols-2">
             {[
-              ["Core hours", "Base effort for the project type, plus 3–6 h per page beyond the included count."],
+              ["Build hours", "Core build for the type (scaled down for fewer pages), 1–3 h per extra page, plus honest hands-on hours per feature."],
               ["Add features", "Hours for each feature not already included, scaled by how heavy that build type is."],
-              ["Apply factors", "Multiply by design × scale × timeline (table on the right)."],
-              ["Price it", "Likely hours × vendor's mid blended rate (×0.82 Tier-2/3). Range −15% / +20%, rounded to quotable figures."],
+              ["Add the real overheads", "Design (8–45% of build by level), QA 12%, PM & client calls 10%, deployment. Each is its own line, so no feature is padded. Then × scale × timeline."],
+              ["Price it", "Likely hours × vendor's mid blended rate (×0.82 Tier-2/3). Range −15% / +20%, wider for thin briefs or big projects. Rounded to quotable figures."],
             ].map(([t, d], i) => (
               <div key={t} className="card p-5">
                 <div className="font-display text-4xl italic text-accent">{String(i + 1).padStart(2, "0")}</div>
@@ -212,20 +212,24 @@ export default function TierGuide() {
                 <tr className="kicker border-b-[1.5px] border-ink bg-ink text-left">
                   <th className="px-5 py-2.5 font-normal !text-paper/70">Factor</th>
                   <th className="px-5 py-2.5 font-normal !text-paper/70">Option</th>
-                  <th className="px-5 py-2.5 text-right font-normal !text-paper/70">×</th>
+                  <th className="px-5 py-2.5 text-right font-normal !text-paper/70">Effect</th>
                 </tr>
               </thead>
               <tbody>
                 {[
-                  ...DESIGN_LEVELS.map((d) => ["Design", d.name, d.mult]),
+                  ...DESIGN_LEVELS.map((d) => ["Design", d.name, `+${Math.round(d.pct * 100)}% of build`]),
                   ...SCALE_LEVELS.map((s) => ["Scale", s.name, s.mult]),
                   ...URGENCY.map((u) => ["Timeline", u.name, u.mult]),
                 ].map(([f, n, m]) => (
                   <tr key={`${f}-${n}`} className="border-b border-dashed border-zinc-300 last:border-0">
                     <td className="kicker px-5 py-2.5">{f}</td>
                     <td className="px-5 py-2.5">{n}</td>
-                    <td className={`num px-5 py-2.5 text-right font-semibold ${Number(m) > 1 ? "text-accent" : Number(m) < 1 ? "text-moss" : ""}`}>
-                      {Number(m).toFixed(2)}
+                    <td
+                      className={`num px-5 py-2.5 text-right font-semibold ${
+                        typeof m === "string" ? "text-ink-2" : m > 1 ? "text-accent" : m < 1 ? "text-moss" : ""
+                      }`}
+                    >
+                      {typeof m === "string" ? m : `×${m.toFixed(2)}`}
                     </td>
                   </tr>
                 ))}
